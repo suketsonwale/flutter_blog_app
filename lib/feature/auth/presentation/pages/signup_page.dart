@@ -1,10 +1,13 @@
 import 'package:blog_app/core/theme/app_pallete.dart';
+import 'package:blog_app/feature/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/feature/auth/presentation/widgets/auth_field.dart';
 import 'package:blog_app/feature/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupPage extends StatefulWidget {
-  static MaterialPageRoute<dynamic> route() => MaterialPageRoute(builder: (context)=> SignupPage());
+  static MaterialPageRoute<dynamic> route() =>
+      MaterialPageRoute(builder: (context) => SignupPage());
   const SignupPage({super.key});
 
   @override
@@ -49,7 +52,20 @@ class _SignupPageState extends State<SignupPage> {
                 controller: passwordController,
                 isObscureText: true,
               ),
-              AuthGradientButton(buttonText: "Sign Up",),
+              AuthGradientButton(
+                buttonText: "Sign Up",
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    context.read<AuthBloc>().add(
+                      AuthSignUp(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                        name: nameController.text.trim(),
+                      ),
+                    );
+                  }
+                },
+              ),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
@@ -61,10 +77,11 @@ class _SignupPageState extends State<SignupPage> {
                     children: [
                       TextSpan(
                         text: "Sign In",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppPallete.gradient2,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: AppPallete.gradient2,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ],
                   ),
